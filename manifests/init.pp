@@ -36,6 +36,7 @@ class phpfpm (
     $daemonize                   = $phpfpm::params::daemonize,
     $rlimit_files                = $phpfpm::params::rlimit_files,
     $rlimit_core                 = $phpfpm::params::rlimit_core,
+    $events_mechanism            = $phpfpm::params::events_mechanism,
     $restart_command             = $phpfpm::params::restart_command,
 ) inherits phpfpm::params
 {

@@ -115,7 +115,11 @@ rlimit_core = <%= @rlimit_core %>
 ; - /dev/poll  (Solaris >= 7)
 ; - port       (Solaris >= 10)
 ; Default Value: not set (auto detection)
+<% if @events_mechanism -%>
+events.mechanism = <%= @events_mechanism %>
+<% else -%>
 ; events.mechanism = epoll
+<% end -%>
 
 ;;;;;;;;;;;;;;;;;;;;
 ; Pool Definitions ;

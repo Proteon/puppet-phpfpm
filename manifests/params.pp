@@ -28,6 +28,7 @@ class phpfpm::params {
             $daemonize                   = 'yes'
             $rlimit_files                = undef
             $rlimit_core                 = undef
+            $events_mechanism            = undef
             $restart_command             = "service ${service_name} reload"
 
             # Pool configuration defaults
@@ -88,6 +89,7 @@ class phpfpm::params {
             $daemonize                   = 'yes'
             $rlimit_files                = undef
             $rlimit_core                 = undef
+            $events_mechanism            = undef
             $restart_command             = "systemctl reload ${service_name}"
 
             # Pool configuration defaults
@@ -148,6 +150,7 @@ class phpfpm::params {
             $daemonize                   = 'yes'
             $rlimit_files                = undef
             $rlimit_core                 = undef
+            $events_mechanism            = undef
             $restart_command             = "service ${service_name} reload"
 
             # Pool configuration defaults
