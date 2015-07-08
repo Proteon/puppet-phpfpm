@@ -74,6 +74,18 @@ class phpfpm (
             content => template('phpfpm/php-fpm.conf.erb'),
             notify  => Class['phpfpm::service'],
         }
+
+	# workaround bug in Ubuntu 14.04
+        # see also: https://bugs.launchpad.net/ubuntu/+source/php5/+bug/1242376
+	if $lsbdistrelease == '14.04' {
+            file { '/etc/init/php5-fpm.override':
+                ensure => 'present',
+                owner  => 'root',
+                group  => 'root',
+                mode   => '0644',
+                source => "puppet:///modules/${module_name}/php5-fpm.override",
+            }
+        }
     }
 }
 
