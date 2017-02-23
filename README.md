@@ -83,6 +83,15 @@ class { 'phpfpm':
 phpfpm::pool { 'main': }
 ```
 
+Use a custom template file, which you must provide, to generate the main
+FPM configuration file:
+
+```puppet
+class { 'phpfpm':
+    config_template_file => 'site/phpfpm/my-php-fpm.conf.erb',
+}
+```
+
 Add a few custom pools with advanced options:
 
 ```puppet
@@ -120,6 +129,13 @@ phpfpm::pool { 'main':
         'max_execution_time' => '300',
     },
 }
+
+# Pool using a custom template file that you provide, rather than the stock template
+phpfpm::pool { 'www':
+    listen             => '127.0.0.1:9001',
+    pool_template_file => 'site/phpfpm/mypool.conf.erb',
+}
+
 ```
 
 Notify the php-fpm daemon of your custom php configuration changes:

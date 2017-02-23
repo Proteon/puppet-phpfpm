@@ -18,6 +18,8 @@
 #
 define phpfpm::pool (
     $ensure                    = 'present',
+    $config_user               = $phpfpm::params::config_user,
+    $config_group              = $phpfpm::params::config_group,
     $user                      = $phpfpm::params::pool_user,
     $group                     = $phpfpm::params::pool_group,
     $listen                    = $phpfpm::params::pool_listen,
@@ -46,7 +48,7 @@ define phpfpm::pool (
     $chroot                    = $phpfpm::params::pool_chroot,
     $chdir                     = $phpfpm::params::pool_chdir,
     $catch_workers_output      = $phpfpm::params::pool_catch_workers_output,
-    $security_limit_extensions = $phpfpm::params::pool_sec_limit_extensions,
+    $security_limit_extensions = $phpfpm::params::pool_security_limit_extensions,
     $env                       = $phpfpm::params::pool_env,
     $php_value                 = $phpfpm::params::pool_php_value,
     $php_flag                  = $phpfpm::params::pool_php_flag,
@@ -54,32 +56,24 @@ define phpfpm::pool (
     $php_admin_flag            = $phpfpm::params::pool_php_admin_flag,
     $service_name              = $phpfpm::params::service_name,
     $pool_dir                  = $phpfpm::params::pool_dir,
-)
-{
-    $pool_file_path = "${pool_dir}/${name}.conf"
+    $pool_template_file        = $phpfpm::params::pool_template_file,
+) {
+  $pool_file_path = "${pool_dir}/${name}.conf"
 
-    if $pm_start_servers < $pm_min_spare_servers or
-         $pm_start_servers > $pm_max_spare_servers {
-        fail( "pm_start_servers(${pm_start_servers}) must not be less than \
-pm_min_spare_servers(${pm_min_spare_servers}) and not greater than \
-pm_max_spare_servers(${pm_max_spare_servers})" )
-    }
+  if $pm_start_servers < $pm_min_spare_servers or
+  $pm_start_servers > $pm_max_spare_servers {
+    fail("pm_start_servers(${pm_start_servers}) must not be less than \
+      pm_min_spare_servers(${pm_min_spare_servers}) and not greater than \
+      pm_max_spare_servers(${pm_max_spare_servers})")
+  }
 
-    if $ensure == 'absent' {
-        file { $pool_file_path:
-            ensure => 'absent',
-            notify => Service[$service_name],
-        }
-    }
-    else {
-        file { $pool_file_path:
-            ensure   => 'present',
-            owner    => 'root',
-            group    => 'root',
-            mode     => '0644',
-            content  => template('phpfpm/pool.conf.erb'),
-            require  => Class['Phpfpm::Package'],
-            notify   => Service[$service_name],
-        }
-    }
+  file { $pool_file_path:
+    ensure  => $ensure,
+    owner   => $config_user,
+    group   => $config_group,
+    mode    => '0644',
+    content => template($pool_template_file),
+    require => Class['Phpfpm::Package'],
+    notify  => Service[$service_name],
+  }
 }
